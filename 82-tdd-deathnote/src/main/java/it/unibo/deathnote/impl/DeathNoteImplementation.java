@@ -1,9 +1,17 @@
 package it.unibo.deathnote.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import it.unibo.deathnote.api.DeathNote;
 
 public class DeathNoteImplementation implements DeathNote {
 
+    private Map<String, Death> deathMap= new HashMap<>();
+    private static final int INVALID_CAUSE_TIME = 40;
+    private static final int INVALID_DETAILS_TIME = 6000 + INVALID_CAUSE_TIME;
+    private String lastNameWritten;
+    private long startTime;
     /**
      * Returns the rule with the given number.
      *
@@ -18,7 +26,7 @@ public class DeathNoteImplementation implements DeathNote {
             throw new IllegalArgumentException("the given rule number is smaller than 1 or larger than the number of rules");
         }
         else {
-            return RULES.get(ruleNumber);
+            return RULES.get(ruleNumber-1);
         }
     }
 
@@ -29,7 +37,14 @@ public class DeathNoteImplementation implements DeathNote {
      */
     @Override
     public void writeName(String name) {
-        throw new NullPointerException("the given name is null");        
+        startTime = System.currentTimeMillis();
+        if (name == null) {
+            throw new NullPointerException("the given name is null");        
+        }
+        else {
+            lastNameWritten = name;
+            deathMap.put(name, new Death());
+        }
     } 
 
     /**
@@ -43,7 +58,18 @@ public class DeathNoteImplementation implements DeathNote {
      */
     @Override
     public boolean writeDeathCause(String cause) {
-        throw new IllegalStateException("there is no name written in this DeathNote, or the cause is null");
+        if (lastNameWritten == null || deathMap.isEmpty()) { 
+            throw new IllegalStateException("there is no name written in this DeathNote, or the cause is null");
+        }
+        else {
+            if (System.currentTimeMillis() - startTime <= 40) {
+                deathMap.get(this.lastNameWritten).cause = cause;
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 
     /**
@@ -57,8 +83,18 @@ public class DeathNoteImplementation implements DeathNote {
      */
     @Override
     public boolean writeDetails(String details) {
-        throw new IllegalStateException("there is no name written in this DeathNote, or the details are null");
-
+        if (lastNameWritten == null || deathMap.isEmpty()){
+            throw new IllegalStateException("there is no name written in this DeathNote, or the details are null");
+        }
+        else {
+            if (System.currentTimeMillis() - startTime <= INVALID_DETAILS_TIME) {
+                deathMap.get(this.lastNameWritten).details = details;
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 
     /**
@@ -71,10 +107,13 @@ public class DeathNoteImplementation implements DeathNote {
      */
     @Override
     public String getDeathCause(String name) {
-        throw new IllegalStateException("the provider name is not written in this DeathNote");
+        if (!deathMap.containsKey(name)){
+            throw new IllegalStateException("the provider name is not written in this DeathNote");
+        }
+        else {
+            return deathMap.get(name).cause; 
+            }
     }
-
-
 
 /**
      * Provides the details of the death of the person with the given name.
@@ -86,7 +125,12 @@ public class DeathNoteImplementation implements DeathNote {
      */
     @Override
     public String getDeathDetails(String name) {
-        throw new IllegalStateException("the provider name is not written in this DeathNote");
+        if (!deathMap.containsKey(name)){
+            throw new IllegalStateException("the provider name is not written in this DeathNote");
+        }
+        else { 
+            return deathMap.get(name).cause; 
+        }
 
     }
 
@@ -99,13 +143,39 @@ public class DeathNoteImplementation implements DeathNote {
      */
     @Override
     public boolean isNameWritten(String name) {
-        // TODO Auto-generated method stub
-        return false;
+        if (deathMap.containsKey(name)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
+    static class Death {
+        private String cause = "";
+        private String details = "heart attack";
 
+        public Death(){
+        }
+        public Death(String cause){
+            this.cause = cause;
+        }
+        public Death(String cause, String details){
+            this.cause = cause;
+        }
 
-
-
+        public String getCause() {
+            return cause;
+        }
+        public void setCause(String cause) {
+            this.cause = cause;
+        }
+        public String getDetails() {
+            return details;
+        }
+        public void setDetails(String details) {
+            this.details = details;
+        }
+    }
 
 }

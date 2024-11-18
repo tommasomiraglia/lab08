@@ -9,12 +9,16 @@ Use the *Test-Driven Development (TDD)* methodology to develop the following.
       * check that the exceptions are thrown correctly, that their type is the expected one, and that the message is not null, empty, or blank.
    2. No rule is empty or null in the DeathNote rules.
       * for all the valid rules, check that none is null or blank
+
+
    3. The human whose name is written in the DeathNote will eventually die.
       * verify that the human has not been written in the notebook yet
       * write the human in the notebook
       * verify that the human has been written in the notebook
       * verify that another human has not been written in the notebook
       * verify that the empty string has not been written in the notebook
+
+      
    4. Only if the cause of death is written within the next 40 milliseconds of writing the person's name, it will happen.
       * check that writing a cause of death before writing a name throws the correct exception
       * write the name of a human in the notebook

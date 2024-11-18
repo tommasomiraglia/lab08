@@ -3,6 +3,8 @@ package it.unibo.mvc;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -27,12 +29,18 @@ public class MiniGUI {
      * Creates a new {@link MiniGUI}.
      */
     public MiniGUI() {
-        final JPanel canvas = new JPanel();
-        canvas.setLayout(new BorderLayout());
+        //final JPanel canvas = new JPanel();
+        final JPanel newJPanel = new JPanel();
+        // canvas.setLayout(new BorderLayout());
+        newJPanel.setLayout(new BorderLayout());
         final JButton write = new JButton("Print a random number on standard output");
-        canvas.add(write, BorderLayout.CENTER);
-        frame.setContentPane(canvas);
+        newJPanel.add(write, BorderLayout.CENTER);
+        // frame.setContentPane(newJPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JTextArea boxLetter = new JTextArea();
+        frame.add(boxLetter);
+        newJPanel.add(write, BorderLayout.NORTH);
+
         /*
          * Handlers
          */
@@ -58,6 +66,9 @@ public class MiniGUI {
         final int sw = (int) screen.getWidth();
         final int sh = (int) screen.getHeight();
         frame.setSize(sw / PROPORTION, sh / PROPORTION);
+        
+        // In `display()`, use `JFrame.pac9k()` to resize the frame to the minimum size prior to displaying
+        frame.pack();
         /*
          * Instead of appearing at (0,0), upper left corner of the screen, this
          * flag makes the OS window manager take care of the default positioning
